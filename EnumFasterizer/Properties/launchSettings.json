@@ -1,0 +1,7 @@
+{
+  "profiles": {
+    "EnumFasterizer": {
+      "commandName": "DebugRoslynComponent"
+    }
+  }
+}
