@@ -13,7 +13,7 @@ namespace TestingSourceGeneratorConsole
         
     }
 
-    public class SomeClass
+    class SomeClass
     {
         public class SubClass
         {

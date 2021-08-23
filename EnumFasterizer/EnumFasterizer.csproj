@@ -12,6 +12,8 @@
 		<PackageProjectUrl>https://github.com/OFark/EnumFasterizer</PackageProjectUrl>
 		<NoPackageAnalysis>true</NoPackageAnalysis>
 		<Version>1.0.1</Version>
+		<RepositoryUrl>https://github.com/OFark/EnumFasterizer.git</RepositoryUrl>
+		<RepositoryType>git</RepositoryType>
 	</PropertyGroup>
 
 	<ItemGroup>

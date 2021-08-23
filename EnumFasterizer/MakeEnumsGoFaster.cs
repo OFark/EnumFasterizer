@@ -21,7 +21,7 @@ namespace EnumFasterizer
                 StringBuilder source = new($@"using System;
 namespace {r.Namespace}
 {{
-    public static partial class EnumFasterizerExtension
+    {r.Accessibility} static class {r.EnumClass}
     {{
         public static string FastToString(this {r.EnumName} e)
         {{
@@ -41,7 +41,7 @@ namespace {r.Namespace}
         }}
     }}
 }}");
-                File.WriteAllText($"c:\\{r.EnumName}_testouput.cs", source.ToString());
+                //File.WriteAllText($"c:\\{r.EnumName}_testouput.cs", source.ToString());
                 context.AddSource($"{r.EnumName}_fasterizer.cs", SourceText.From(source.ToString(), Encoding.UTF8));
             }
         }
@@ -59,22 +59,26 @@ namespace {r.Namespace}
             {
                 if (context.Node is EnumDeclarationSyntax enumDeclarationSyntax)
                 {
-                    EnumRecievers.Add(new EnumReceiver(enumDeclarationSyntax));                    
+                    EnumRecievers.Add(new EnumReceiver(enumDeclarationSyntax, context.SemanticModel));
                 }
             }
         }
 
         class EnumReceiver
         {
-            public EnumReceiver(EnumDeclarationSyntax enumDeclarationSyntax)
+            public EnumReceiver(EnumDeclarationSyntax enumDeclarationSyntax, SemanticModel semanticModel)
             {
                 EnumName = enumDeclarationSyntax.Identifier.Text;
+                EnumClass = $"{EnumName}_Extension";
                 var parent = enumDeclarationSyntax.Parent;
+
+                Accessibility = semanticModel.GetDeclaredSymbol(enumDeclarationSyntax)?.DeclaredAccessibility.ToString().ToLower() ?? "";
 
                 while (parent is ClassDeclarationSyntax classDeclaration)
                 {
                     EnumName = $"{classDeclaration.Identifier.Text}.{EnumName}";
                     parent = classDeclaration.Parent;
+                    Accessibility = semanticModel.GetDeclaredSymbol(classDeclaration)?.DeclaredAccessibility.ToString().ToLower() ?? "";
                 }
 
                 if (parent is NamespaceDeclarationSyntax namespaceDeclaration)
@@ -92,10 +96,11 @@ namespace {r.Namespace}
                 }
             }
 
+            public string Accessibility { get; private set; }
             public List<string> Members { get; } = new List<string>();
             public string EnumName { get; private set; }
-
             public string Namespace { get; private set; }
+            public string EnumClass { get; private set; } 
         }
     }
 }
