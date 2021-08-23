@@ -41,7 +41,6 @@ namespace {r.Namespace}
         }}
     }}
 }}");
-                //File.WriteAllText($"c:\\{r.EnumName}_testouput.cs", source.ToString());
                 context.AddSource($"{r.EnumName}_fasterizer.cs", SourceText.From(source.ToString(), Encoding.UTF8));
             }
         }

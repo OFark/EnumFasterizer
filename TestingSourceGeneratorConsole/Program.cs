@@ -7,7 +7,7 @@ namespace TestingSourceGeneratorConsole
         static void Main(string[] args)
         {
             Console.WriteLine(SomeClass.SubClass.SomeBuriedEnumIvemade.Geoff.FastToString());
-            Console.WriteLine(SomePublicEnumIvemade.Geoan.FastToString());
+            Console.WriteLine(SomePublicEnumIdmade.Geoan.FastToString());
         }
 
         
@@ -27,7 +27,7 @@ namespace TestingSourceGeneratorConsole
         }
     }
 
-    public enum SomePublicEnumIvemade
+    public enum SomePublicEnumIdmade
     {
         Jane,
         Janey,
