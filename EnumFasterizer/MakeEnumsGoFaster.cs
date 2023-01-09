@@ -84,6 +84,10 @@ namespace {r.Namespace}
                 {
                     Namespace = namespaceDeclaration.Name.ToString();
                 }
+                else if (parent is FileScopedNamespaceDeclarationSyntax fileScopedNamespaceDeclarationSyntax)
+                {
+                    Namespace = fileScopedNamespaceDeclarationSyntax.Name.ToString();
+                }
                 else
                 {
                     Namespace = "EnumFasterizer";
