@@ -32,6 +32,7 @@ namespace TestingSourceGeneratorConsole
         Jane,
         Janey,
         Geoan,
+        [Obsolete("Please don't use")]
         Geoany,
     }
 

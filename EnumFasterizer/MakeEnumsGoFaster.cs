@@ -23,6 +23,7 @@ namespace {r.Namespace}
 {{
     {r.Accessibility} static class {r.EnumClass}
     {{
+        #pragma warning disable CS0618
         public static string FastToString(this {r.EnumName} e)
         {{
             switch(e)
@@ -39,6 +40,7 @@ namespace {r.Namespace}
                     throw new ArgumentOutOfRangeException(nameof(e), e, null);
             }}
         }}
+        #pragma warning restore CS0618
     }}
 }}");
                 context.AddSource($"{r.EnumName}_fasterizer.cs", SourceText.From(source.ToString(), Encoding.UTF8));
