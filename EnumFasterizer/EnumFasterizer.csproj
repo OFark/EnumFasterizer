@@ -7,6 +7,7 @@
     <Nullable>enable</Nullable>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <EnforceExtendedAnalyzerRules>true</EnforceExtendedAnalyzerRules>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
     <Authors>Tod Palin</Authors>
     <Company />
     <Description>Creates an extension to your enums called FastToString(), that returns the ToString of your enum, only much faster.</Description>
