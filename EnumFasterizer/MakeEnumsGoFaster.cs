@@ -26,9 +26,11 @@ namespace EnumFasterizer
 
                 StringBuilder source = new($$"""
 using System;
-#pragma warning disable IDE0130
+#pragma warning disable IDE0079 // Remove unnecessary suppression
+#pragma warning disable IDE0130 // Namespace does not match folder structure
 namespace {{enumReceiver.Namespace}};
 #pragma warning restore IDE0130
+#pragma warning restore IDE0079
 
 {{enumReceiver.Accessibility}} static class {{enumReceiver.EnumClass}}
 {
