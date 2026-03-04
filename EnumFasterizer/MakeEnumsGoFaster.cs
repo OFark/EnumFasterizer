@@ -26,8 +26,9 @@ namespace EnumFasterizer
 
                 StringBuilder source = new($$"""
 using System;
-
+#pragma warning disable IDE0130
 namespace {{enumReceiver.Namespace}};
+#pragma warning restore IDE0130
 
 {{enumReceiver.Accessibility}} static class {{enumReceiver.EnumClass}}
 {
