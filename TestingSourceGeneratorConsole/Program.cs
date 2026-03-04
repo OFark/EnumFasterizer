@@ -4,7 +4,7 @@ namespace TestingSourceGeneratorConsole
 {
     public class Program
     {
-        static void Main(string[] args)
+        static void Main(string[] _)
         {
             Console.WriteLine(SomeClass.SubClass.SomeBuriedEnumIvemade.Geoff.FastToString());
             Console.WriteLine(SomePublicEnumIdmadeEarlier.Geoan.FastToString());

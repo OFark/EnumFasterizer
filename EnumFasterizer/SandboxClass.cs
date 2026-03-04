@@ -9,17 +9,13 @@ namespace EnumFasterizer
     {
         public static string FastToString(this SomeEnum e)
         {
-            switch(e)
+            return e switch
             {
-                case SomeEnum.A:
-                    return nameof(SomeEnum.A);
-                case SomeEnum.B:
-                    return nameof(SomeEnum.B);
-                case SomeEnum.C:
-                    return nameof(SomeEnum.C);
-                default:
-                    throw new ArgumentOutOfRangeException(nameof(e), e, null);
-            }
+                SomeEnum.A => nameof(SomeEnum.A),
+                SomeEnum.B => nameof(SomeEnum.B),
+                SomeEnum.C => nameof(SomeEnum.C),
+                _ => throw new ArgumentOutOfRangeException(nameof(e), e, null)
+            };
         }
     }
 

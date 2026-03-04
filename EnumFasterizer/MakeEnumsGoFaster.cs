@@ -2,67 +2,65 @@
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Text;
 using System.Collections.Generic;
-using System.IO;
 using System.Text;
 
 namespace EnumFasterizer
 {
     [Generator]
-    public class MakeEnumsGoFaster : ISourceGenerator
+    public class MakeEnumsGoFaster : IIncrementalGenerator
     {
-        public void Execute(GeneratorExecutionContext context)
+        public void Initialize(IncrementalGeneratorInitializationContext context)
         {
-            if (!(context.SyntaxContextReceiver is SyntaxReceiver receiver))
-                return;
+            // Create a provider for enum declarations
+            var enumDeclarations = context.SyntaxProvider
+                .CreateSyntaxProvider(
+                    predicate: static (s, _) => s is EnumDeclarationSyntax,
+                    transform: static (ctx, _) => GetEnumReceiver(ctx))
+                .Where(static m => m is not null);
 
-            foreach (var r in receiver.EnumRecievers)
+            // Register source output
+            context.RegisterSourceOutput(enumDeclarations, static (spc, enumReceiver) =>
+            {
+                if (enumReceiver is null)
+                    return;
+
+                StringBuilder source = new($$"""
+using System;
+                    
+namespace {{enumReceiver.Namespace}}
+{
+    {{enumReceiver.Accessibility}} static class {{enumReceiver.EnumClass}}
+    {
+        public static string FastToString(this {{enumReceiver.EnumName}} e)
+        {
+            return e switch
             {
 
-                StringBuilder source = new($@"using System;
-namespace {r.Namespace}
-{{
-    {r.Accessibility} static class {r.EnumClass}
-    {{
-        #pragma warning disable CS0618
-        public static string FastToString(this {r.EnumName} e)
-        {{
-            switch(e)
-            {{");
-
-                foreach (var member in r.Members)
+""");
+                foreach (var member in enumReceiver.Members)
                 {
-                    source.Append($@"
-                case {r.EnumName}.{member}:
-                    return nameof({r.EnumName}.{member});");
+                    source.Append(
+$"""
+                {enumReceiver.EnumName}.{member} => nameof({enumReceiver.EnumName}.{member}),
+
+""");
                 }
-                source.Append($@"
-                default:
-                    throw new ArgumentOutOfRangeException(nameof(e), e, null);
-            }}
-        }}
-        #pragma warning restore CS0618
-    }}
-}}");
-                context.AddSource($"{r.EnumName}_fasterizer.cs", SourceText.From(source.ToString(), Encoding.UTF8));
-            }
+                
+                source.Append("""
+                _ => throw new ArgumentOutOfRangeException(nameof(e), e, null)
+            };
+        }
+    }
+}
+""");
+                spc.AddSource($"{enumReceiver.EnumName}_fasterizer.cs", SourceText.From(source.ToString(), Encoding.UTF8));
+            });
         }
 
-        public void Initialize(GeneratorInitializationContext context)
+        private static EnumReceiver? GetEnumReceiver(GeneratorSyntaxContext context)
         {
-            context.RegisterForSyntaxNotifications(() => new SyntaxReceiver());
-        }
-
-        class SyntaxReceiver : ISyntaxContextReceiver
-        {
-            public List<EnumReceiver> EnumRecievers { get; } = new List<EnumReceiver>();
-
-            public void OnVisitSyntaxNode(GeneratorSyntaxContext context)
-            {
-                if (context.Node is EnumDeclarationSyntax enumDeclarationSyntax)
-                {
-                    EnumRecievers.Add(new EnumReceiver(enumDeclarationSyntax, context.SemanticModel));
-                }
-            }
+            var enumDeclarationSyntax = (EnumDeclarationSyntax)context.Node;
+            return new EnumReceiver(enumDeclarationSyntax, context.SemanticModel);
         }
 
         class EnumReceiver
@@ -102,7 +100,7 @@ namespace {r.Namespace}
             }
 
             public string Accessibility { get; private set; }
-            public List<string> Members { get; } = new List<string>();
+            public List<string> Members { get; } = [];
             public string EnumName { get; private set; }
             public string Namespace { get; private set; }
             public string EnumClass { get; private set; } 
