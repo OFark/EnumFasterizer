@@ -48,4 +48,6 @@ Depending on what the library exposes in code, `EnumFasterizer` generally aims t
 
 ## Install
 
-If this is published as a NuGet package:
+```bash
+dotnet add package EnumFasterizer
+```
