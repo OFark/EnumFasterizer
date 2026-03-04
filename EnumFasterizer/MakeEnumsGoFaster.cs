@@ -26,30 +26,29 @@ namespace EnumFasterizer
 
                 StringBuilder source = new($$"""
 using System;
-                    
-namespace {{enumReceiver.Namespace}}
+
+namespace {{enumReceiver.Namespace}};
+
+{{enumReceiver.Accessibility}} static class {{enumReceiver.EnumClass}}
 {
-    {{enumReceiver.Accessibility}} static class {{enumReceiver.EnumClass}}
+    public static string FastToString(this {{enumReceiver.EnumName}} e)
     {
-        public static string FastToString(this {{enumReceiver.EnumName}} e)
+        return e switch
         {
-            return e switch
+
+""");
+            foreach (var member in enumReceiver.Members)
             {
-
-""");
-                foreach (var member in enumReceiver.Members)
-                {
-                    source.Append(
+                source.Append(
 $"""
-                {enumReceiver.EnumName}.{member} => nameof({enumReceiver.EnumName}.{member}),
+            {enumReceiver.EnumName}.{member} => nameof({enumReceiver.EnumName}.{member}),
 
 """);
-                }
-                
-                source.Append("""
-                _ => throw new ArgumentOutOfRangeException(nameof(e), e, null)
-            };
-        }
+            }
+            
+            source.Append("""
+            _ => throw new ArgumentOutOfRangeException(nameof(e), e, null)
+        };
     }
 }
 """);
