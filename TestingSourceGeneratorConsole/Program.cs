@@ -1,39 +1,54 @@
 ﻿using System;
 
-namespace TestingSourceGeneratorConsole
+namespace TestingSourceGeneratorConsole;
+
+public class Program
 {
-    public class Program
+    static void Main(string[] _)
     {
-        static void Main(string[] _)
+        Console.WriteLine(SomeClass.SubClass.SomeBuriedEnumIvemade.Geoff.FastToString());
+        Console.WriteLine(SomePublicEnumIdmadeEarlier.Geoan.FastToString());
+        Console.WriteLine(SomeInternalEnum.Jeffers.FastToString());
+    }
+
+
+    private enum SomePrivateEnum
+    {
+        Jeff,
+        Geoff,
+        Geoffrey,
+        Jeffers
+    }
+}
+
+class SomeClass
+{
+    public class SubClass
+    {
+        public enum SomeBuriedEnumIvemade
         {
-            Console.WriteLine(SomeClass.SubClass.SomeBuriedEnumIvemade.Geoff.FastToString());
-            Console.WriteLine(SomePublicEnumIdmadeEarlier.Geoan.FastToString());
-        }
-
-        
-    }
-
-    class SomeClass
-    {
-        public class SubClass
-        {
-            public enum SomeBuriedEnumIvemade
-            {
-                Jeff,
-                Geoff,
-                Geoffrey,
-                Jeffers
-            }
+            Jeff,
+            Geoff,
+            Geoffrey,
+            Jeffers
         }
     }
+}
 
-    public enum SomePublicEnumIdmadeEarlier
-    {
-        Jane,
-        Janey,
-        Geoan,
-        [Obsolete("Please don't use")]
-        Geoany,
-    }
+public enum SomePublicEnumIdmadeEarlier
+{
+    Jane,
+    [Obsolete]
+    Janey,
+    Geoan,
+    [Obsolete("Please don't use")]
+    Geoany,
+}
 
+internal enum SomeInternalEnum
+{
+    Jeff,
+    Geoff,
+    Geoffrey,
+    Jeffers
 }
