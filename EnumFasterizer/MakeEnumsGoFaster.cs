@@ -35,6 +35,7 @@ namespace {{enumReceiver.Namespace}};
 #pragma warning restore IDE0130
 #pragma warning restore IDE0079
 
+[System.Diagnostics.CodeAnalysis.SuppressMessage("Style", "IDE0036:Modifiers are not ordered", Justification = "Different Orders for different accessibilities intruduces too much complexity")]
 {{enumReceiver.Accessibility}} static class {{enumReceiver.EnumClass}}
 {
     {{enumReceiver.Accessibility}} static string FastToString(this {{enumReceiver.EnumName}} e)
