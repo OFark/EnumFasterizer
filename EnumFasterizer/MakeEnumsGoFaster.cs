@@ -33,12 +33,11 @@ using System;
 #pragma warning disable IDE0130 // Namespace does not match folder structure
 namespace {{enumReceiver.Namespace}};
 #pragma warning restore IDE0130
-#pragma warning restore IDE0079
 
 [System.Diagnostics.CodeAnalysis.SuppressMessage("Style", "IDE0036:Modifiers are not ordered", Justification = "Different Orders for different accessibilities intruduces too much complexity")]
-{{enumReceiver.Accessibility}} static class {{enumReceiver.EnumClass}}
+{{enumReceiver.Modifiers}} static class {{enumReceiver.EnumClass}}
 {
-    {{enumReceiver.Accessibility}} static string FastToString(this {{enumReceiver.EnumName}} e)
+    {{enumReceiver.Modifiers}} static string FastToString(this {{enumReceiver.EnumName}} e)
     {
         return e switch
         {
@@ -66,6 +65,7 @@ $"""
         };
     }
 }
+#pragma warning restore IDE0079
 """);
             spc.AddSource($"{enumReceiver.EnumName}_fasterizer.cs", SourceText.From(source.ToString(), Encoding.UTF8));
         });
@@ -98,13 +98,13 @@ $"""
             EnumClass = $"{EnumName}_Extension";
             var parent = enumDeclarationSyntax.Parent;
 
-            Accessibility = semanticModel.GetDeclaredSymbol(enumDeclarationSyntax)?.DeclaredAccessibility.ToString().ToLower() ?? "";
+            Modifiers = semanticModel.GetDeclaredSymbol(enumDeclarationSyntax)?.DeclaredAccessibility.ToString().ToLower() ?? "";
 
             while (parent is ClassDeclarationSyntax classDeclaration)
             {
                 EnumName = $"{classDeclaration.Identifier.Text}.{EnumName}";
                 parent = classDeclaration.Parent;
-                Accessibility = semanticModel.GetDeclaredSymbol(classDeclaration)?.DeclaredAccessibility.ToString().ToLower() ?? "";
+                Modifiers = semanticModel.GetDeclaredSymbol(classDeclaration)?.DeclaredAccessibility.ToString().ToLower() ?? "";
             }
 
             if (parent is NamespaceDeclarationSyntax namespaceDeclaration)
@@ -121,7 +121,7 @@ $"""
             }
 
             foreach (var x in enumDeclarationSyntax.Members)
-            {           
+            {
 
                 var obsoleteAttribute = x.AttributeLists.SelectMany(a => a.Attributes).FirstOrDefault(a => a.Name.ToString().Contains("Obsolete"));
                 if (obsoleteAttribute is not null)
@@ -139,11 +139,21 @@ $"""
             }
         }
 
-        public string Accessibility { get; private set; }
+        private readonly string[] ModifierOrder = new[] { "public", "private", "protected", "internal", "file", "static", "extern", "new", "virtual", "abstract", "sealed", "override", "readonly", "unsafe", "required", "volatile", "async" };
+
+        private string OrderModifiers(params string[] modifiers)
+        {
+            //return the modifiers in the order defined in ModifierOrder
+            return string.Join(" ", ModifierOrder.Where(m => modifiers.Contains(m)));
+        }
+
+        public string Modifiers { get; private set; }
         public List<Member> Members { get; } = [];
         public string EnumName { get; private set; }
         public string Namespace { get; private set; }
         public string EnumClass { get; private set; }
+
+        
     }
 }
 
